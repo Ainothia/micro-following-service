@@ -1,0 +1,18 @@
+-- Create Database
+CREATE DATABASE IF NOT EXISTS FollowingDb;
+USE FollowingDb;
+
+-- Create Table: Followers
+CREATE TABLE IF NOT EXISTS Followers (
+    Id INT PRIMARY KEY AUTO_INCREMENT,  -- Stores GUID as binary for efficiency
+    FollowerId INT NOT NULL,
+    FolloweeId INT NOT NULL,
+    CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    -- Ensure unique follower-followee relationships
+    UNIQUE KEY unique_follow (FollowerId, FolloweeId)
+);
+
+-- Indexes for fast lookups
+CREATE INDEX idx_follower ON Followers (FollowerId);
+CREATE INDEX idx_followee ON Followers (FolloweeId);
