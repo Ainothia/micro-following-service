@@ -1,3 +1,4 @@
+using FollowingService.Data.Models;
 using FollowingService.Data.Repositories;
 using Microsoft.Extensions.Caching.Distributed;
 using System.Text.Json;
@@ -33,41 +34,45 @@ public class FollowService : IFollowService
     public async Task<bool> IsFollowingAsync(int followerId, int followeeId) =>
         await _repository.IsFollowingAsync(followerId, followeeId);
 
-    public async Task<List<int>> GetFollowersAsync(int userId)
+    public async Task<GetFollowersResponseDto> GetFollowersAsync(int userId)
     {
         string cacheKey = $"followers:{userId}";
         var cachedData = await _cache.GetStringAsync(cacheKey);
 
         if (cachedData != null)
         {
-            return JsonSerializer.Deserialize<List<int>>(cachedData, _cacheOptions);
+            return JsonSerializer.Deserialize<GetFollowersResponseDto>(cachedData, _cacheOptions);
         }
 
         var followers = await _repository.GetFollowersAsync(userId);
-        await _cache.SetStringAsync(cacheKey, JsonSerializer.Serialize(followers), new DistributedCacheEntryOptions
+        var response = new GetFollowersResponseDto { FollowerIds = followers };
+
+        await _cache.SetStringAsync(cacheKey, JsonSerializer.Serialize(response), new DistributedCacheEntryOptions
         {
             AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10)
         });
 
-        return followers;
+        return response;
     }
 
-    public async Task<List<int>> GetFollowingAsync(int userId)
+    public async Task<GetFollowingsResponseDto> GetFollowingAsync(int userId)
     {
         string cacheKey = $"following:{userId}";
         var cachedData = await _cache.GetStringAsync(cacheKey);
 
         if (cachedData != null)
         {
-            return JsonSerializer.Deserialize<List<int>>(cachedData, _cacheOptions);
+            return JsonSerializer.Deserialize<GetFollowingsResponseDto>(cachedData, _cacheOptions);
         }
 
         var following = await _repository.GetFollowingAsync(userId);
-        await _cache.SetStringAsync(cacheKey, JsonSerializer.Serialize(following), new DistributedCacheEntryOptions
+        var response = new GetFollowingsResponseDto { FollowingIds = following };
+
+        await _cache.SetStringAsync(cacheKey, JsonSerializer.Serialize(response), new DistributedCacheEntryOptions
         {
             AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10)
         });
 
-        return following;
+        return response;
     }
 }

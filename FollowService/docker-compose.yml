@@ -12,7 +12,7 @@ services:
         condition: service_healthy
     environment:
       - ConnectionStrings__DefaultConnection=Server=mysql;Database=FollowingDb;User=root;Password=;
-      - Redis__Host=redis  # ✅ Ensure Redis is accessed by its Docker service name
+      - Redis__Host=redis
       - Redis__Port=6379
       - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_URLS=http://+:5100
@@ -30,7 +30,7 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - mysql_data:/var/lib/mysql  # ✅ Define this volume properly
+      - mysql_data:/var/lib/mysql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
@@ -51,7 +51,18 @@ services:
       retries: 5
       timeout: 3s
 
-# ✅ Define the missing volume here
+  ngrok:
+    image: ngrok/ngrok:latest
+    container_name: ngrok
+    restart: always
+    depends_on:
+      - api
+    command: [ "http", "following_service:5100", "--scheme=https", "--log=stdout" ]  # ✅ Updated for Ngrok v3
+    ports:
+      - "4040:4040"  # Ngrok web interface
+    environment:
+      - NGROK_AUTHTOKEN=2sRPkOTYlzciIZYtZ4M5Hqx3Zxu_5PaFdeSdbzA2omSVpJ6J9 # Replace with your Ngrok token
+
 volumes:
   mysql_data:
   redis_data:

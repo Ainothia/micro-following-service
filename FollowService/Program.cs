@@ -31,6 +31,18 @@ builder.Services.AddStackExchangeRedisCache(options =>
 builder.Services.AddScoped<IFollowRepository, FollowRepository>();
 builder.Services.AddScoped<IFollowService, FollowService.Services.FollowService>();
 
+// ✅ Add CORS Policy
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins",
+        policy =>
+        {
+            policy.AllowAnyOrigin()
+                  .AllowAnyMethod()
+                  .AllowAnyHeader();
+        });
+});
+
 // Add controllers and enable OpenAPI (Swagger)
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -49,8 +61,11 @@ if (app.Environment.IsDevelopment() || app.Environment.EnvironmentName == "Docke
     });
 }
 
-// Enable routing and authorization
+// Enable routing, CORS, and authorization
 app.UseRouting();
+
+app.UseCors("AllowAllOrigins"); // ✅ Enable CORS
+
 app.UseAuthorization();
 app.MapControllers();
 
