@@ -50,18 +50,18 @@ services:
       interval: 5s
       retries: 5
       timeout: 3s
-
+  
   ngrok:
     image: ngrok/ngrok:latest
     container_name: ngrok
     restart: always
     depends_on:
       - api
-    command: [ "http", "following_service:5100", "--scheme=https", "--log=stdout" ]  # ✅ Updated for Ngrok v3
+    command: [ "http", "following_service:5100", "--domain=fly-next-shrimp.ngrok-free.app", "--log=stdout" ]
     ports:
       - "4040:4040"  # Ngrok web interface
     environment:
-      - NGROK_AUTHTOKEN=2sRPkOTYlzciIZYtZ4M5Hqx3Zxu_5PaFdeSdbzA2omSVpJ6J9 # Replace with your Ngrok token
+      - NGROK_AUTHTOKEN=2sRPkOTYlzciIZYtZ4M5Hqx3Zxu_5PaFdeSdbzA2omSVpJ6J9
 
 volumes:
   mysql_data:

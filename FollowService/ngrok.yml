@@ -1,6 +1,7 @@
-authtoken: 2sRPkOTYlzciIZYtZ4M5Hqx3Zxu_5PaFdeSdbzA2omSVpJ6J9  # Get this from https://dashboard.ngrok.com/get-started
+authtoken: 2sRPkOTYlzciIZYtZ4M5Hqx3Zxu_5PaFdeSdbzA2omSVpJ6J9  # Replace with your Ngrok token
 version: "2"
 tunnels:
   api:
     proto: http
     addr: following_service:5100  # Target the Docker service name
+    domain: fly-next-shrimp.ngrok-free.app  # Set your custom domain

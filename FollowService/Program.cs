@@ -30,6 +30,7 @@ builder.Services.AddStackExchangeRedisCache(options =>
 // Register repositories and services
 builder.Services.AddScoped<IFollowRepository, FollowRepository>();
 builder.Services.AddScoped<IFollowService, FollowService.Services.FollowService>();
+builder.Services.AddHttpClient();
 
 // ✅ Add CORS Policy
 builder.Services.AddCors(options =>

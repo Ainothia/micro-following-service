@@ -1,3 +1,4 @@
+using FollowingService.Data.Models;
 using FollowService.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,12 +15,24 @@ namespace FollowingService.Controllers
             _followService = followService;
         }
 
-        [HttpPost("{userId}")]
-        public async Task<IActionResult> Follow(int userId, [FromQuery] int followerId)
+        [HttpPost("")]
+        public async Task<IActionResult> Follow(FollowRequestModel followRequestModel)
         {
-            await _followService.FollowUserAsync(followerId, userId);
-            return Ok();
+            var userId = followRequestModel.UserId;
+            var followerId = followRequestModel.FollowerId;
+            Console.WriteLine("UserId: " + userId + " FollowerId: " + followerId);
+
+            try
+            {
+                await _followService.FollowUserAsync(followerId, userId);
+                return Ok(new { message = "Follow request successful" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
         }
+
 
         [HttpDelete("{userId}")]
         public async Task<IActionResult> Unfollow(int userId, [FromQuery] int followerId)

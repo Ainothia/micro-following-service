@@ -2,5 +2,5 @@ namespace FollowingService.Data.Models;
 
 public class GetFollowersResponseDto
 {
-    public List<int> FollowerIds { get; set; }
+    public List<string> Usernames { get; set; }
 }
